@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NBB.Domain" Version="$(NBBPackagesVersion)" />
+    <PackageReference Include="NBB.Data.Abstractions" Version="$(NBBPackagesVersion)" />
+    <PackageReference Include="NBB.Tools.ExpressionEvaluation.Abstractions" Version="$(NBBExtrasPackagesVersion)" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsPackagesVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Tasks.PublishedLanguage\Tasks.PublishedLanguage.csproj" />
+  </ItemGroup>
+</Project>

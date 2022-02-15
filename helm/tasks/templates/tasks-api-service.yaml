@@ -1,0 +1,21 @@
+{{- $current := .Values.tasksApi -}}
+{{- if $current.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "tasks.fullname" . }}{{ $current.nameSuffix }}
+  labels:
+    app.kubernetes.io/name: {{ include "tasks.name" . }}{{ $current.nameSuffix }}
+    helm.sh/chart: {{ include "tasks.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ $current.service.type }}
+  ports:
+    - port: {{ $current.service.port }}
+      protocol: TCP
+      targetPort: {{ $current.deployment.port }}
+  selector:
+    app.kubernetes.io/name: {{ include "tasks.name" . }}{{ $current.nameSuffix }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}

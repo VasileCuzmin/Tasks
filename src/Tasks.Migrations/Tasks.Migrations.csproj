@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <None Remove="Internal\SqlScripts\EnsureMigrationsTable.sql" />
+    <None Remove="Internal\SqlScripts\GetScriptsVersion.sql" />
+    <None Remove="Internal\SqlScripts\UpdateScriptsVersion.sql" />
+    <None Remove="SqlScripts\001.Initial.sql" />
+    <None Remove="SqlScripts\002.Snapshing.sql" />
+    <None Remove="SqlScripts\003.TaskDefinition_AutomaticStartColumn.sql" />
+    <None Remove="SqlScripts\004.ProcessDefinition_AlterColumns.sql" />
+    <None Remove="SqlScripts\005.TaskDefinition_AlterColumns.sql" />
+    <None Remove="SqlScripts\006.EventDefinition_AlterColumns.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Internal\SqlScripts\EnsureMigrationsTable.sql" />
+    <EmbeddedResource Include="Internal\SqlScripts\GetScriptsVersion.sql" />
+    <EmbeddedResource Include="Internal\SqlScripts\UpdateScriptsVersion.sql" />
+    <EmbeddedResource Include="SqlScripts\002.Snapshing.sql" />
+    <EmbeddedResource Include="SqlScripts\001.Initial.sql" />
+    <EmbeddedResource Include="SqlScripts\003.TaskDefinition_AutomaticStartColumn.sql" />
+    <EmbeddedResource Include="SqlScripts\004.ProcessDefinition_AlterColumns.sql" />
+    <EmbeddedResource Include="SqlScripts\006.EventDefinition_AlterColumns.sql" />
+    <EmbeddedResource Include="SqlScripts\005.TaskDefinition_AlterColumns.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(MicrosoftExtensionsPackagesVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="$(MicrosoftExtensionsPackagesVersion)" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+    <PackageReference Include="NBB.EventStore.AdoNet.Migrations" Version="$(NBBPackagesVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.ApplicationBlocks.Data">
+      <HintPath>..\_ExternalResources\Subtext.Scripting\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Subtext.Scripting">
+      <HintPath>..\_ExternalResources\Subtext.Scripting\Subtext.Scripting.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

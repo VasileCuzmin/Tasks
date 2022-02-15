@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\domain\Tasks.RuntimeDomain\Tasks.Runtime.Domain.csproj" />
+    <ProjectReference Include="..\Tasks.PublishedLanguage\Tasks.PublishedLanguage.csproj" />
+    <ProjectReference Include="..\Tasks.PublishedLanguage\Tasks.PublishedLanguage.csproj" />
+    <PackageReference Include="NBB.Messaging.Abstractions" Version="$(NBBPackagesVersion)" />
+  </ItemGroup>
+
+</Project>

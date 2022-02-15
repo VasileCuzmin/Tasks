@@ -1,0 +1,151 @@
+# Default values for lsng.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  image:
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+
+  imagePullSecrets:
+  - name: "registrykey"
+
+  messaging:
+    transport: Nats
+    topicPrefix: LSNG.
+    natsUrl: nats://nats-streaming-svc.nats:4222
+    natsCluster: faas-cluster
+    natsDurableName: durable
+
+  jaeger:
+    enabled: true
+    agentHost: localhost
+    agentPort: 6831
+    agentImageTag: 1.11.0
+    collectorHost: jaeger-collector.opentracing
+    collectorPort: 14267
+
+  vaultEnvironment: "false"
+
+  vaultConfigs:
+    sa: "dummy_value"
+    role: "dummy_value"
+    secret: "dummy_value"
+    key: "dummy_value"
+
+  connectionStrings:
+    server_name: ""
+    server_port: ""
+    user_id: ""
+    database: ""
+    tasksDatabase: ""
+
+  sslCertificate:
+    enabled: false
+    name: RootBCR-v2.pem
+    configMap: ca-rootbcr
+    
+  identity:
+    authority: https://lsng-sso.appservice.online
+    apiName: LSNG.Api
+
+  prometheus:
+    enabled: false
+    port: 8080
+    path: '/metrics'
+
+  serilog:
+    minimumLevel: "Warning"
+
+tasksApi:
+  enabled: true
+  replicaCount: 1
+  nameSuffix: "-api"
+  
+  gateway:
+    enabled: true
+    audience: Tasks.Api
+    resource: tasks-api
+    secured: false
+
+  image:
+    repository: tsacr.azurecr.io/
+    pullPolicy: IfNotPresent
+    name: tasks_api
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  deployment:
+    port: 5000
+
+  resources: 
+    limits:
+      memory: 512Mi
+
+  messaging:
+    source: Tasks.Api
+
+  # Additional environment variables
+  env: {}
+    # ENV_VAR: Value
+
+
+tasksWorker:
+  enabled: true
+  replicaCount: 1
+  nameSuffix: "-worker"
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  image:
+    repository: tsacr.azurecr.io/
+    pullPolicy: IfNotPresent
+    name: tasks_worker
+
+  service:
+    type: ClusterIP
+    port: 80
+  deployment:
+    port: 5000
+
+  resources: 
+    limits:
+      memory: 512Mi
+
+  messaging:
+    source: Tasks.Worker
+    clientId: Tasks_worker
+    natsQGroup: Tasks.Worker
+
+  # Additional environment variables
+  env: {}
+    # ENV_VAR: Value
+
+tasksDataMigrations:
+  enabled: true
+  replicaCount: 1
+  nameSuffix: "-data-migrations"
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  image:
+    repository: tsacr.azurecr.io/
+    pullPolicy: IfNotPresent
+    name: tasks_migrations
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  deployment:
+    port: 80
+
+  resources: 
+    limits:
+      memory: 512Mi
+
+  # Additional environment variables
+  env: {}
+
+
+    # ENV_VAR: Value    

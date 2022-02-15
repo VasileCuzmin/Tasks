@@ -1,0 +1,65 @@
+{{- $current := .Values.tasksDataMigrations -}}
+  {{- $global := .Values.global -}}
+  {{- if $current.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "tasks.fullname" . }}{{ $current.nameSuffix}}
+  labels:
+    app.kubernetes.io/name: {{ include "tasks.name" . }}{{ $current.nameSuffix}}
+    helm.sh/chart: {{ include "tasks.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": "pre-install,pre-upgrade"
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+spec:
+  template:
+    metadata:
+      {{- if eq $global.vaultEnvironment "true" }}
+      annotations:
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/agent-pre-populate-only : 'true'
+        vault.hashicorp.com/role: {{ $global.vaultConfigs.role }}
+        vault.hashicorp.com/agent-inject-secret-credentials.vault: {{ $global.vaultConfigs.secret }}/{{ $global.vaultConfigs.key }}
+        vault.hashicorp.com/agent-inject-template-credentials.vault: |
+          {{ printf "{{- with secret \"%s/%s\" -}}"  .Values.global.vaultConfigs.secret .Values.global.vaultConfigs.key }}
+          export ConnectionStrings__Tasks_Database="Server=tcp:{{ $global.connectionStrings.server_name }},{{ $global.connectionStrings.server_port }};Database={{ $global.connectionStrings.database }};User ID={{ $global.connectionStrings.user_id }};Password={{`{{ .Data.data.pass }}`}};MultipleActiveResultSets=True;"
+          {{ print "{{- end }}" }}
+      {{- end }}
+      labels:
+        app.kubernetes.io/name: {{ include "tasks.name" . }}{{ $current.nameSuffix}}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      labels:
+        app.kubernetes.io/name: {{ include "tasks.name" . }}{{ $current.nameSuffix}}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- if eq $global.vaultEnvironment "true" }}
+      serviceAccountName: {{ $global.vaultConfigs.sa }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ $current.image.repository }}{{ $current.image.name}}:{{ $global.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ $current.image.pullPolicy }}
+          env:
+          {{- if eq $global.vaultEnvironment "false" }}
+          - name: ConnectionStrings__Tasks_Database
+            value: {{ $global.connectionStrings.tasksDatabase | quote }}
+          {{- end }}
+          {{- range $key, $value := $current.env }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- if .Values.hostAliases }}
+          hostAliases: 
+          {{- toYaml .Values.hostAliases | trim | nindent 6 }}
+          {{- end }}  
+      {{- if $global.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml $global.imagePullSecrets | trim | nindent 6 }}
+      {{- end }}
+      restartPolicy: Never
+  backoffLimit: 3
+  {{- end -}}

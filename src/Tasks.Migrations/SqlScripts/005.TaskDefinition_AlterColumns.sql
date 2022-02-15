@@ -1,0 +1,9 @@
+BEGIN
+ALTER TABLE TaskDefinition
+ALTER COLUMN StartEventDefinitionId INTEGER NOT NULL
+END;
+
+BEGIN
+ALTER TABLE TaskDefinition
+ALTER COLUMN EndEventDefinitionId INTEGER NOT NULL
+END;

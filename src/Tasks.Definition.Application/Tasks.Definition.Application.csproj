@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Queries\Runtime\**" />
+    <EmbeddedResource Remove="Queries\Runtime\**" />
+    <None Remove="Queries\Runtime\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\domain\Tasks.DefinitionDomain\Tasks.Definition.Domain.csproj" />
+    <ProjectReference Include="..\Tasks.PublishedLanguage\Tasks.PublishedLanguage.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="$(FluentValidationPackageVersion)" />
+    <PackageReference Include="AutoMapper" Version="$(AutoMapperPackageVersion)" />
+    <PackageReference Include="NBB.Application.DataContracts" Version="$(NBBPackagesVersion)" />
+    <PackageReference Include="NBB.Messaging.Abstractions" Version="$(NBBPackagesVersion)" />
+  </ItemGroup>
+
+</Project>

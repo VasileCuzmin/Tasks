@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "Charisma.Leasing.Worker.DocumentSigner": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:52344/"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://localhost:{ServicePort}"
+    }
+  }
+}

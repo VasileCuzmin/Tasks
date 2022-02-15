@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Description>Tasks PublishedLanguage - needed for integration</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="$(MediatRPackageVersion)" />
+	<PackageReference Include="NBB.Application.DataContracts.Schema" Version="$(NBBPackagesVersion)" />
+  </ItemGroup>
+
+</Project>

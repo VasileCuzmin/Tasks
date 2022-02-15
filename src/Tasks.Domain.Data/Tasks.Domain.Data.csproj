@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="$(AutoMapperPackageVersion)" />
+    <PackageReference Include="EFCore.BulkExtensions" Version="3.3.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="$(MicrosoftExtensionsPackagesVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(MicrosoftEntityFrameworkPackagesVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftEntityFrameworkPackagesVersion)" />
+    <PackageReference Include="NBB.Data.EntityFramework" Version="$(NBBPackagesVersion)" />
+    <PackageReference Include="NBB.Data.EventSourcing" Version="$(NBBPackagesVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\domain\Tasks.DefinitionDomain\Tasks.Definition.Domain.csproj" />
+    <ProjectReference Include="..\domain\Tasks.RuntimeDomain\Tasks.Runtime.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

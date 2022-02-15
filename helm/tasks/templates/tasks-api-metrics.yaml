@@ -1,0 +1,20 @@
+{{- $global := .Values.global -}}
+{{- $current := .Values.tasksApi -}}
+{{- if $current.enabled -}}
+{{- if and (eq $global.prometheus.enabled true) (eq (lower $global.messaging.transport) "rusi") }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  labels:
+    app:  {{ include "tasks.fullname" . }}{{ $current.nameSuffix }}
+    app-runtime: rusi
+  name: {{ include "tasks.fullname" . }}{{ $current.nameSuffix }}-rusi-metrics
+spec:
+  podMetricsEndpoints:
+    - port: rusi-diag
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "tasks.name" . }}{{ $current.nameSuffix }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
+{{- end -}}

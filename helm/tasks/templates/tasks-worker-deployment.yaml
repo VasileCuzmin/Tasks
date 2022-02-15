@@ -1,0 +1,106 @@
+{{- $current := .Values.tasksWorker -}}
+{{- $global := .Values.global -}}
+{{- if $current.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tasks.fullname" . }}{{ $current.nameSuffix}}
+  labels:
+    app.kubernetes.io/name: {{ include "tasks.name" . }}{{ $current.nameSuffix}}
+    helm.sh/chart: {{ include "tasks.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ $current.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "tasks.name" . }}{{ $current.nameSuffix}}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        {{- if eq $global.vaultEnvironment "true" }}
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: {{ $global.vaultConfigs.role }}
+        vault.hashicorp.com/agent-inject-secret-credentials.vault: {{ $global.vaultConfigs.secret }}/{{ $global.vaultConfigs.key }}
+        vault.hashicorp.com/agent-inject-template-credentials.vault: |
+          {{ printf "{{- with secret \"%s/%s\" -}}"  .Values.global.vaultConfigs.secret .Values.global.vaultConfigs.key }}
+          export ConnectionStrings__Tasks_Database="Server=tcp:{{ $global.connectionStrings.server_name }},{{ $global.connectionStrings.server_port }};Database={{ $global.connectionStrings.database }};User ID={{ $global.connectionStrings.user_id }};Password={{`{{ .Data.data.pass }}`}};MultipleActiveResultSets=True;"
+          export EventStore__NBB__ConnectionString=${ConnectionStrings__Tasks_Database}
+          {{ print "{{- end }}" }}
+        {{- end }}
+        rusi.io/app-id: {{ $current.messaging.source | quote }}
+        rusi.io/enabled: {{ eq (lower $global.messaging.transport) "rusi" | quote }}
+      labels:
+        app.kubernetes.io/name: {{ include "tasks.name" . }}{{ $current.nameSuffix}}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- if eq $global.vaultEnvironment "true" }}
+      serviceAccountName: {{ $global.vaultConfigs.sa }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ $current.image.repository }}{{ $current.image.name}}:{{ $global.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ $current.image.pullPolicy }}
+          ports:
+            - containerPort: {{ $current.deployment.port }}
+          resources:
+            {{- toYaml $current.resources | trim | nindent 12 }}
+          env:
+          - name: Messaging__TopicPrefix
+            value: {{ $global.messaging.topicPrefix | quote }}
+          - name: Messaging__Source
+            value: {{ $current.messaging.source | quote }}
+          - name: Messaging__Nats__natsUrl
+            value: {{ $global.messaging.natsUrl | quote }}
+          - name: Messaging__Nats__cluster
+            value: {{ $global.messaging.natsCluster | quote }}
+          - name: Messaging__Nats__clientId
+            value: {{ $current.messaging.clientId | quote }}
+          - name: Messaging__Nats__qGroup
+            value: {{ $current.messaging.natsQGroup | quote }}
+          - name: Messaging__Nats__durableName
+            value: {{ $global.messaging.natsDurableName | quote }}
+          - name: Messaging__Transport
+            value: {{ $global.messaging.transport | quote }}
+          {{- if eq $global.vaultEnvironment "false" }}
+          - name: ConnectionStrings__Tasks_Database
+            value: {{ $global.connectionStrings.tasksDatabase | quote }}
+          - name: EventStore__NBB__ConnectionString
+            value: {{ $global.connectionStrings.tasksDatabase | quote }}
+          {{- end }}
+          - name: OpenTracing__Jeager__AgentHost
+            value: {{ $global.jaeger.agentHost | quote }}
+          - name: OpenTracing__Jeager__AgentPort
+            value: {{ $global.jaeger.agentPort | quote }}
+          - name: OpenTracing__Jeager__IsEnabled
+            value: {{ $global.jaeger.enabled | quote }}
+          - name: Serilog__MinimumLevel
+            value: {{ $global.serilog.minimumLevel | quote }}
+          {{- range $key, $value := $current.env }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+        {{- if $global.jaeger.enabled }}
+        - image: "jaegertracing/jaeger-agent:{{ $global.jaeger.agentImageTag }}"
+          name: jaeger-agent{{ $current.nameSuffix}}
+          ports:
+          - containerPort: 5775
+            protocol: UDP
+          - containerPort: 6831
+            protocol: UDP
+          - containerPort: 6832
+            protocol: UDP
+          - containerPort: 5778
+            protocol: TCP
+          args: ["--collector.host-port={{ $global.jaeger.collectorHost }}:{{ $global.jaeger.collectorPort }}"]
+        {{- end -}}
+        {{- if .Values.hostAliases }}
+        hostAliases: 
+        {{- toYaml .Values.hostAliases | trim | nindent 6 }}
+        {{- end }}  
+      {{- if $global.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml $global.imagePullSecrets | trim | nindent 6 }}
+      {{- end }}
+{{- end -}}

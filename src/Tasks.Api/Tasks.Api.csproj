@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <DockerTargetOS>Linux</DockerTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Jaeger.Senders.Thrift" Version="1.0.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="$(MediatRPackageVersion)" />
+    <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="2.6.0" />
+    <PackageReference Include="NBB.Correlation.AspNet" Version="$(NBBPackagesVersion)" />
+    <PackageReference Include="NBB.Correlation.Serilog" Version="$(NBBPackagesVersion)" />
+    <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="$(HellangMiddlewareProblemDetailsPackageVersion)" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="$(AutoMapperExtensionsPackageVersion)" />
+    <PackageReference Include="OpenTelemetry.Exporter.Prometheus" Version="1.2.0-beta1" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.0.0-rc8" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc8" />
+    <PackageReference Include="prometheus-net" Version="5.0.1" />
+    <PackageReference Include="prometheus-net.AspNetCore" Version="5.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+	<PackageReference Include="NBB.Messaging.BackwardCompatibility" Version="$(NBBPackagesVersion)" />
+    <PackageReference Include="NBB.Messaging.Nats" Version="$(NBBPackagesVersion)" />
+	<PackageReference Include="NBB.Messaging.Rusi" Version="$(NBBPackagesVersion)" />
+    <PackageReference Include="NBB.Messaging.OpenTracing" Version="$(NBBPackagesVersion)" />
+    <PackageReference Include="NBB.Tools.Serilog.OpenTracingSink" Version="$(NBBPackagesVersion)" />
+    <PackageReference Include="Jaeger" Version="$(JaegerPackageVersion)" />
+    <PackageReference Include="OpenTracing.Contrib.NetCore" Version="$(OpenTracingContribPackageVersion)" />
+    <PackageReference Include="Scrutor" Version="$(ScrutorPackageVersion)" />
+    <PackageReference Include="Serilog.AspNetCore" Version="$(SerilogAspNetCorePackageVersion)" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="$(SerilogSinksConsolePackageVersion)" />
+    <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="$(SerilogSinksMSSqlServerPackageVersion)" />
+    <PackageReference Include="NBB.Correlation.Serilog.SqlServer" Version="$(NBBPackagesVersion)" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\MessageSerDes\MessageSerDes.csproj" />
+    <ProjectReference Include="..\Tasks.Definition.Application\Tasks.Definition.Application.csproj" />
+    <ProjectReference Include="..\Tasks.Domain.Data\Tasks.Domain.Data.csproj" />
+    <ProjectReference Include="..\Tasks.Runtime.Application\Tasks.Runtime.Application.csproj" />
+  </ItemGroup>
+
+</Project>

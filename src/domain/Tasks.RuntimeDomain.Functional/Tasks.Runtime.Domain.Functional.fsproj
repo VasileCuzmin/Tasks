@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="ProcessDefinitionAggregate\ValueObjects.fs" />
+    <Compile Include="ProcessDefinitionAggregate\AggregateRoot.fs" />
+    <Compile Include="EventDefinitionAggregate\ValueObjects.fs" />
+    <Compile Include="EventDefinitionAggregate\AggregateRoot.fs" />
+    <Compile Include="ProcessObserverAggregate\ValueObjects2.fs" />
+    <Compile Include="ProcessObserverAggregate\DomainEvents.fs" />
+    <Compile Include="ProcessObserverAggregate\Entities.fs" />
+    <Compile Include="ProcessObserverAggregate\AggregateRoot.fs" />
+  </ItemGroup>
+
+</Project>
